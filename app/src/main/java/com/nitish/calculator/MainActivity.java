@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity {
 
     AppCompatButton btnMod, btnAdd, btnSub, btnMul, btnDiv, btnDot, btnEqual, btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btnAC, btnX;
@@ -53,22 +55,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLasClearClick(View view) {
-        String text="";
-        if (!tvInput.getText().toString().isEmpty()) {
-            text = tvInput.getText().toString().substring(0, tvInput.length() - 1);
+        String text = "";
+        if (!tvInput.getText().toString().isEmpty() && tvInput.length() > 1) {
+
+            Log.d("TAG", "onLasClearClick: " + tvInput.getText().toString().substring(tvInput.length() - 2, tvInput.length() - 1));
+
+            if (tvInput.getText().toString().substring(tvInput.length() - 1).charAt(0) == ' ') {
+                text = tvInput.getText().toString().substring(0, tvInput.length() - 3);
+            } else {
+                text = tvInput.getText().toString().substring(0, tvInput.length() - 1);
+            }
+
         }
+
         try {
+
             tvInput.setText(text);
-            if (tvInput.length()>1)
+            if (tvInput.length() >=1&&tvInput.getText().toString().charAt(tvInput.length()-1)!=' '){
                 onEqual();
-            else
-                tvResult.setText(tvInput.getText().toString());
+            }
+
             Log.d("TAG", "clear");
-        }
-        catch (Exception e){
+
+        } catch (Exception e) {
+
             tvInput.setText("");
             tvResult.setText("");
-            Log.d("TAG",e.toString());
+
+            Log.d("TAG", e.toString());
+
         }
     }
 
@@ -78,16 +93,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onOperatorClick(View view) {
-            tvInput.append(" " + ((AppCompatButton) view).getText().toString() + " ");
+        tvInput.append(" " + ((AppCompatButton) view).getText().toString() + " ");
     }
 
     public void onDigitClick(View view) {
-       try{
+        try {
             Log.d("TAG", "true " + status);
             tvInput.append(((AppCompatButton) view).getText().toString());
-        }catch (Exception e){
-           tvResult.setText("Error");
-       }
+        } catch (Exception e) {
+            tvResult.setText("Error");
+        }
         onEqual();
     }
 
@@ -98,35 +113,36 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDotClick(View view) {
         if (!tvInput.getText().toString().equals("")) {
-            char lastCh = tvInput.getText().toString().substring(tvInput.length()-1).charAt(0);
+            char lastCh = tvInput.getText().toString().substring(tvInput.length() - 1).charAt(0);
             int lastvalue = (int) lastCh;
             if (lastvalue >= 48 && lastvalue <= 57)
                 tvInput.append(".");
             else {
                 tvInput.append("0.");
             }
-        }
-        else {
+        } else {
             tvInput.append("0.");
         }
         onEqual();
     }
 
     public void onEqual() {
+        if (tvResult.getText().toString().length()>10){
+            tvResult.setTextSize(40f);
+        }
         if (!status) {
             String text = tvInput.getText().toString();
             try {
                 double result = expression(text);
                 String resultText = String.valueOf(result);
-                String[] split = resultText.split("\\.");
-                if (Integer.parseInt(split[1])==0){
-                    tvResult.setText(split[0]);
-                }
-                else {
+                if (resultText.contains(".0")) {
+                    tvResult.setText(resultText.substring(0, resultText.length() - 2));
+                } else {
                     tvResult.setText(resultText);
                 }
             } catch (Exception e) {
                 tvResult.setText("Error");
+                Log.d("Error", e.toString());
             }
         }
     }
@@ -135,14 +151,15 @@ public class MainActivity extends AppCompatActivity {
     private double expression(String text) throws IllegalAccessException {
 
         String[] token = text.split(" ");
-
+        Log.d("TAG", "token : "+ Arrays.toString(token));
         double[] num = new double[token.length / 2 + 1];
         char[] op = new char[token.length / 2];
         Log.d("TAG", "come" + token.length);
         for (int i = 0, j = 0; i < token.length; i++) {
             Log.d("TAG", "expression: " + num[j]);
             if (i % 2 == 0) {
-                num[j] = Double.parseDouble(token[i]);
+                if (!token[i].isEmpty())
+                    num[j] = Double.parseDouble(token[i]);
             } else {
                 op[j++] = token[i].charAt(0);
             }

@@ -5,25 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_gravity="center_vertical"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1">
 
         <TextView
             android:id="@+id/tvInput"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:gravity="end|bottom"
             android:textAlignment="gravity"
             android:text=""
-            android:textSize="35sp"
+            android:textSize="30sp"
             android:textColor="@color/black"
             android:paddingVertical="20dp"
             app:layout_constraintBottom_toTopOf="@id/tvResult"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -55,8 +55,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="@drawable/bg_layout"
         android:padding="10dp">
 
