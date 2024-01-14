@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
             if (tvInput.length() >=1&&tvInput.getText().toString().charAt(tvInput.length()-1)!=' '){
                 onEqual();
             }
+            else {
+                tvResult.setText("");
+            }
 
             Log.d("TAG", "clear");
 
@@ -93,7 +96,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onOperatorClick(View view) {
-        tvInput.append(" " + ((AppCompatButton) view).getText().toString() + " ");
+        try {
+            if (tvInput.getText().toString().isEmpty() &&view.getId()==R.id.btnSub){
+                tvInput.append(" " + ((AppCompatButton) view).getText().toString() + " ");
+            }else
+            if (tvInput.getText().toString().charAt(tvInput.length() - 1) == ' ') {
+                tvInput.setText(tvInput.getText().toString().substring(0, tvInput.length() - 3));
+                tvInput.append(" " + ((AppCompatButton) view).getText().toString() + " ");
+            } else {
+                tvInput.append(" " + ((AppCompatButton) view).getText().toString() + " ");
+            }
+        }
+        catch (Exception e){
+            Log.d("TAG", "onOperatorClick: "+e.toString());
+        }
+
     }
 
     public void onDigitClick(View view) {
@@ -107,8 +124,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEqualClick(View view) {
-        onEqual();
-        tvInput.setText(tvResult.getText().toString());
+        try {
+            if (!tvInput.getText().toString().isEmpty()) {
+                onEqual();
+                tvInput.setText(tvResult.getText().toString());
+            }
+            else {
+                tvInput.setText("Not found value");
+            }
+        }catch (Exception e){
+
+        }
     }
 
     public void onDotClick(View view) {
@@ -132,6 +158,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!status) {
             String text = tvInput.getText().toString();
+            if (text.charAt(text.length()-1)==' '){
+                text = text.substring(0,text.length()-3);
+            }
             try {
                 double result = expression(text);
                 String resultText = String.valueOf(result);
